@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turtle Creek Golf League</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a18;font-size:14px;background:#f0f0ec}
+.hdr{background:#1a6b3c;color:white;padding:12px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.hdr h1{font-size:15px;font-weight:600}.hdr p{font-size:11px;opacity:.8}
+.nav{display:flex;overflow-x:auto;background:white;border-bottom:1px solid #d4d4ce;position:sticky;top:57px;z-index:99}
+.nav::-webkit-scrollbar{display:none}
+.nb{flex-shrink:0;padding:10px 13px;font-size:12px;font-weight:500;color:#6b6b66;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.nb.on{color:#1a6b3c;border-bottom-color:#1a6b3c}
+.pg{padding:12px;max-width:900px;margin:0 auto}
+.card{background:white;border-radius:10px;border:1px solid #d4d4ce;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.ct{font-size:13px;font-weight:600;color:#1a6b3c;margin-bottom:10px}
+label{font-size:11px;color:#6b6b66;display:block;margin-bottom:3px;font-weight:500}
+input,select{width:100%;padding:8px 10px;font-size:13px;border:1px solid #d4d4ce;border-radius:6px;background:white;color:#1a1a18;margin-bottom:8px;-webkit-appearance:none}
+input:focus,select:focus{outline:none;border-color:#1a6b3c}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{padding:8px 16px;font-size:13px;font-weight:500;border-radius:6px;border:1px solid #d4d4ce;background:white;color:#1a1a18;cursor:pointer}
+.btn-p{background:#1a6b3c;color:white;border-color:#1a6b3c}
+.btn-sm{padding:4px 9px;font-size:11px}
+.btn-d{color:#b83232;border-color:#b83232;font-size:11px;padding:4px 9px}
+.bx{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.bg{background:#e8f5ee;color:#1a6b3c}.ba{background:#fdf6e3;color:#7a5c00}
+.bb{background:#f4f4f2;color:#6b6b66}.br{background:#fdf0f0;color:#b83232}
+.bi{background:#e8f1fb;color:#1a5fa8}
+.met{background:#f4f4f2;border-radius:6px;padding:10px 8px;text-align:center}
+.met .v{font-size:18px;font-weight:700;color:#1a6b3c}.met .l{font-size:10px;color:#6b6b66;margin-top:2px}
+.info{background:#f4f4f2;border-radius:6px;padding:8px 12px;font-size:12px;color:#6b6b66;margin-bottom:10px;line-height:1.5}
+.info.warn{background:#fdf6e3;color:#7a5c00}
+.sep{height:1px;background:#e0e0dc;margin:10px 0}
+.ox{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;color:#6b6b66;font-weight:500;padding:5px 6px;border-bottom:1px solid #e0e0dc;font-size:11px;white-space:nowrap}
+td{padding:5px 6px;border-bottom:1px solid #e0e0dc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.sec{display:none}.sec.on{display:block}
+.sgrid{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sgrid table{min-width:700px;border-collapse:collapse}
+.sgrid th{background:#1a6b3c;color:white;padding:6px 4px;text-align:center;font-size:11px;font-weight:600;border:1px solid #155a32}
+.sgrid th.team-col{text-align:left;min-width:140px;background:#155a32;padding:6px 8px}
+.sgrid th.p3col{background:#1a5fa8}
+.sgrid td{border:1px solid #e0e0dc;padding:2px;text-align:center}
+.sgrid td.team-cell{text-align:left;padding:5px 8px;font-size:12px;font-weight:500;background:#f9f9f7;white-space:nowrap}
+.sgrid td.team-cell .sub{font-size:10px;color:#6b6b66;font-weight:400}
+.sgrid input.hi{width:36px;padding:5px 2px;text-align:center;border:none;border-radius:0;margin:0;font-size:13px;font-weight:600;background:transparent}
+.sgrid input.hi:focus{background:#fffbe6;outline:none}
+.sgrid td.tot{font-weight:700;font-size:12px;background:#f0f7f3;padding:4px 6px}
+.sgrid td.hcpd{font-size:11px;color:#1a6b3c;background:#f0f7f3;padding:4px 6px}
+.sgrid td.netd{font-weight:700;font-size:12px;background:#e8f5ee;color:#1a6b3c;padding:4px 6px}
+.sgrid td.p3inp{background:#e8f1fb}
+.sgrid input.ghost-inp{color:#1a5fa8;font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="font-size:24px">&#9971;</div>
+  <div>
+    <h1>Turtle Creek Golf League</h1>
+    <p>Greenville, OH &nbsp;&middot;&nbsp; 9 Teams &nbsp;&middot;&nbsp; 20 Weeks &nbsp;&middot;&nbsp; Two-Man Scramble</p>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="go('weekly')">Weekly Scores</button>
+  <button class="nb" onclick="go('teams')">Teams</button>
+  <button class="nb" onclick="go('standings')">Standings</button>
+  <button class="nb" onclick="go('history')">History</button>
+  <button class="nb" onclick="go('schedule')">Schedule</button>
+  <button class="nb" onclick="go('card')">Scorecard</button>
+</div>
+
+<div class="pg">
+
+<div id="tab-weekly" class="sec on">
+  <div class="card">
+    <div class="ct">Weekly score entry</div>
+    <div class="g3" style="margin-bottom:4px">
+      <div>
+        <label>Select week</label>
+        <select id="wk-sel" onchange="loadWeek()" style="width:100%"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:4px;padding-bottom:8px">
+        <div style="font-size:11px;color:#6b6b66">Side this week</div>
+        <div id="wk-side-chip"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;padding-bottom:8px">
+        <div style="font-size:11px;color:#6b6b66">Skins pot</div>
+        <div style="font-size:13px;font-weight:600;color:#1a6b3c">$18.00</div>
+      </div>
+    </div>
+    <div id="wk-note" class="info warn" style="display:none"></div>
+  </div>
+  <div class="card" style="padding:10px">
+    <div class="ct" style="margin-bottom:6px">Enter gross score per hole for each team</div>
+    <div class="info" style="margin-bottom:8px">Par 3 holes highlighted in <b style="color:#1a5fa8">blue</b> &mdash; no handicap strokes on these. Bye team row pre-filled with ghost score. Tab between cells to move quickly.</div>
+    <div class="sgrid" id="score-grid"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-p" onclick="processWeek()">Calculate &amp; save week</button>
+      <button class="btn" onclick="clearScores()">Clear scores</button>
+      <span id="entry-status" style="font-size:12px;color:#6b6b66"></span>
+    </div>
+  </div>
+  <div id="week-results"></div>
+</div>
+
+<div id="tab-teams" class="sec">
+  <div class="card">
+    <div class="ct">Add team (max 9)</div>
+    <div><label>Team name</label><input id="tn" placeholder="e.g. Smith / Jones"></div>
+    <div class="g2">
+      <div><label>Player 1</label><input id="tp1" placeholder="First Last"></div>
+      <div><label>Player 2</label><input id="tp2" placeholder="First Last"></div>
+    </div>
+    <button class="btn btn-p" onclick="addTeam()">Add team</button>
+  </div>
+  <div id="teams-out"></div>
+</div>
+
+<div id="tab-standings" class="sec">
+  <div class="card"><div class="ct">League standings</div><div id="stand-out"><div class="info">No results yet.</div></div></div>
+  <div class="card"><div class="ct">Team handicaps</div><div id="hcp-out"><div class="info">No rounds yet.</div></div></div>
+</div>
+
+<div id="tab-history" class="sec">
+  <div class="card">
+    <div class="ct">Week history</div>
+    <div style="margin-bottom:10px">
+      <label>View week</label>
+      <select id="hist-sel" onchange="showHistory()" style="width:220px"></select>
+    </div>
+    <div id="hist-out"><div class="info">No weeks saved yet.</div></div>
+  </div>
+</div>
+
+<div id="tab-schedule" class="sec">
+  <div class="card">
+    <div class="ct">20-Week Round Robin Schedule</div>
+    <div class="info">9 teams &middot; one bye per week &middot; alternating front/back &middot; bye team plays ghost match vs last-place team.</div>
+    <div id="sched-out"><div class="info">Add teams to generate schedule.</div></div>
+  </div>
+</div>
+
+<div id="tab-card" class="sec">
+  <div class="card">
+    <div class="ct">Turtle Creek GC &middot; Greenville, OH &middot; Par 71 &middot; Blue Tees 6,454 yds &middot; Rating 70.5 &middot; Slope 130</div>
+    <div class="info">Holes <b style="color:#1a5fa8">6, 8, 11, 17</b> are par 3s &mdash; no handicap strokes on these holes.</div>
+    <div class="ox"><table>
+      <thead><tr><th>Hole</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th style="color:#1a5fa8">6</th><th>7</th><th style="color:#1a5fa8">8</th><th>9</th><th>OUT</th></tr></thead>
+      <tbody>
+        <tr><td>Yards</td><td>555</td><td>343</td><td>370</td><td>399</td><td>389</td><td>159</td><td>331</td><td>220</td><td>326</td><td><b>3092</b></td></tr>
+        <tr><td>Par</td><td>5</td><td>4</td><td>4</td><td>4</td><td>4</td><td style="color:#1a5fa8;font-weight:700">3</td><td>4</td><td style="color:#1a5fa8;font-weight:700">3</td><td>4</td><td><b>35</b></td></tr>
+        <tr><td>Hdcp</td><td>5</td><td>9</td><td>7</td><td>1</td><td>3</td><td>15</td><td>13</td><td>17</td><td>11</td><td></td></tr>
+      </tbody>
+    </table></div>
+    <div class="ox" style="margin-top:10px"><table>
+      <thead><tr><th>Hole</th><th>10</th><th style="color:#1a5fa8">11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th style="color:#1a5fa8">17</th><th>18</th><th>IN</th><th>TOTAL</th></tr></thead>
+      <tbody>
+        <tr><td>Yards</td><td>356</td><td>222</td><td>571</td><td>442</td><td>524</td><td>349</td><td>359</td><td>166</td><td>373</td><td><b>3362</b></td><td><b>6454</b></td></tr>
+        <tr><td>Par</td><td>4</td><td style="color:#1a5fa8;font-weight:700">3</td><td>5</td><td>4</td><td>5</td><td>4</td><td>4</td><td style="color:#1a5fa8;font-weight:700">3</td><td>4</td><td><b>36</b></td><td><b>71</b></td></tr>
+        <tr><td>Hdcp</td><td>4</td><td>18</td><td>8</td><td>12</td><td>2</td><td>14</td><td>10</td><td>16</td><td>6</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+    <div class="sep"></div>
+    <div class="ct">Rules quick reference</div>
+    <div class="info" style="margin-bottom:6px"><b>Points (10 per match):</b> 1 pt per hole low net &middot; tied hole = 0.5 each &middot; +1 pt team low net &middot; tied low net = 0.5 each</div>
+    <div class="info" style="margin-bottom:6px"><b>Handicap:</b> Tracked separately for front &amp; back nine &middot; requires 2 rounds on each side to establish &middot; rolling last 4 rounds, drop highest, average 3 lowest, multiply diff by 0.9, round at .5, max 7 &middot; no strokes on par 3s</div>
+    <div class="info" style="margin-bottom:6px"><b>No-show / bye:</b> Ghost score = last-place team's most recent round on that side (uses next-to-last if that team is the no-show)</div>
+    <div class="info"><b>Skins:</b> $18 pot &middot; whole field competes every hole &middot; net score wins hole &middot; ties carry forward &middot; payout rounds DOWN to nearest $0.50 &middot; remainder rolls to next week</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TC={
+  par: [5,4,4,4,4,3,4,3,4,4,3,5,4,5,4,4,3,4],
+  hdcp:[5,9,7,1,3,15,13,17,11,4,18,8,12,2,14,10,16,6]
+};
+const FRONT=[0,1,2,3,4,5,6,7,8];
+const BACK=[9,10,11,12,13,14,15,16,17];
+const P3=new Set([6,8,11,17]);
+const PAR_FRONT=FRONT.reduce((a,i)=>a+TC.par[i],0);
+const PAR_BACK=BACK.reduce((a,i)=>a+TC.par[i],0);
+
+let S={teams:[],rounds:[],weeks:[]};
+try{const x=localStorage.getItem('tc_league');if(x)S=JSON.parse(x);}catch(e){}
+const sv=()=>{try{localStorage.setItem('tc_league',JSON.stringify(S));}catch(e){}};
+
+const hr=x=>(x%1)>=0.5?Math.ceil(x):Math.floor(x);
+const clamp=(v,mn,mx)=>Math.max(mn,Math.min(mx,v));
+const hNum=i=>i+1;
+const sideIdxs=s=>s==='front'?FRONT:BACK;
+const sidePar=s=>s==='front'?PAR_FRONT:PAR_BACK;
+
+function getRounds(team,side){return S.rounds.filter(r=>r.team===team&&r.side===side);}
+function calcHcp(rounds){
+  if(!rounds||rounds.length<2)return null;
+  const pool=rounds.slice(-4);
+  let diffs=pool.map(r=>r.gross-r.par);
+  if(pool.length>=4){const mx=Math.max(...diffs);diffs.splice(diffs.indexOf(mx),1);}
+  const avg=diffs.reduce((a,b)=>a+b,0)/diffs.length;
+  return clamp(hr(avg*0.9),0,7);
+}
+function getHcp(team,side){const h=calcHcp(getRounds(team,side));return h!==null?h:0;}
+function isEstablished(team){return getRounds(team,'front').length>=2&&getRounds(team,'back').length>=2;}
+
+function genSchedule(){
+  if(S.teams.length<2)return[];
+  const names=S.teams.map(t=>t.name);
+  const list=[...names];
+  while(list.length%2!==0)list.push('BYE');
+  const half=list.length/2;
+  const rounds=[];
+  const t=[...list];
+  for(let r=0;r<t.length-1;r++){
+    const pairs=[];
+    for(let i=0;i<half;i++)pairs.push([t[i],t[t.length-1-i]]);
+    rounds.push(pairs);
+    t.splice(1,0,t.pop());
+  }
+  const sched=[];
+  for(let w=0;w<20;w++){
+    sched.push({week:w+1,side:w%2===0?'front':'back',pairs:rounds[w%rounds.length]});
+  }
+  return sched;
+}
+function getWeekInfo(wnum){const s=genSchedule();return s[wnum-1]||null;}
+
+function getStandingOrder(){
+  const pts={};
+  S.teams.forEach(t=>pts[t.name]=0);
+  S.weeks.forEach(w=>{
+    (w.matches||[]).forEach(m=>{
+      pts[m.teamA]=(pts[m.teamA]||0)+m.ptsA;
+      if(!m.teamB.startsWith('BYE'))pts[m.teamB]=(pts[m.teamB]||0)+m.ptsB;
+    });
+  });
+  return Object.entries(pts).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
+}
+function getGhost(byeTeam,side){
+  const order=getStandingOrder();
+  const ghost=order.find(n=>n!==byeTeam)||S.teams.find(t=>t.name!==byeTeam)?.name;
+  if(!ghost)return null;
+  const rounds=getRounds(ghost,side);
+  return{name:ghost,round:rounds.length?rounds[rounds.length-1]:null};
+}
+
+function go(t){
+  document.querySelectorAll('.nb').forEach(b=>b.classList.toggle('on',b.getAttribute('onclick').includes("'"+t+"'")));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('tab-'+t).classList.add('on');
+  if(t==='weekly')initWeekly();
+  if(t==='teams')renderTeams();
+  if(t==='standings')renderStandings();
+  if(t==='history')initHistory();
+  if(t==='schedule')renderSchedule();
+}
+
+function initWeekly(){
+  const sel=document.getElementById('wk-sel');
+  const cur=sel.value;
+  sel.innerHTML=Array.from({length:20},(_,i)=>`<option value="${i+1}"${cur==i+1?' selected':''}>Week ${i+1}</option>`).join('');
+  loadWeek();
+}
+
+function loadWeek(){
+  const wnum=parseInt(document.getElementById('wk-sel').value);
+  const info=getWeekInfo(wnum);
+  if(!info){document.getElementById('score-grid').innerHTML='<div class="info">Add teams first.</div>';return;}
+  document.getElementById('wk-side-chip').innerHTML=
+    info.side==='front'
+      ?'<span class="bx bi">Front 9 &mdash; Holes 1&ndash;9</span>'
+      :'<span class="bx bb">Back 9 &mdash; Holes 10&ndash;18</span>';
+  const byePair=info.pairs.find(p=>p[0]==='BYE'||p[1]==='BYE');
+  const byeTeam=byePair?(byePair[0]==='BYE'?byePair[1]:byePair[0]):null;
+  const noteEl=document.getElementById('wk-note');
+  if(byeTeam){
+    const ghost=getGhost(byeTeam,info.side);
+    noteEl.style.display='block';
+    noteEl.innerHTML='<b>'+byeTeam+'</b> has the bye this week. Ghost opponent: '+
+      (ghost&&ghost.round
+        ?'<b>'+ghost.name+'</b>\'s last '+info.side+' nine (Week '+ghost.round.week+', gross '+ghost.round.gross+') &mdash; pre-filled below in blue.'
+        :'<b>'+(ghost?ghost.name:'TBD')+'</b> has no prior '+info.side+' round yet &mdash; enter scores manually.');
+  } else {
+    noteEl.style.display='none';
+  }
+  buildGrid(info,byeTeam);
+}
+
+function buildGrid(info,byeTeam){
+  const idxs=sideIdxs(info.side);
+  const teams=S.teams;
+  if(!teams.length){document.getElementById('score-grid').innerHTML='<div class="info">Add teams in the Teams tab first.</div>';return;}
+  const saved=S.weeks.find(w=>w.week===info.week);
+  let html='<table>';
+  html+='<thead><tr><th class="team-col">Team / Hcp</th>';
+  idxs.forEach(i=>{
+    const h=hNum(i),p3=P3.has(h);
+    html+=`<th${p3?' class="p3col"':''}>${h}<br><span style="font-weight:400;opacity:.8">p${TC.par[i]}</span></th>`;
+  });
+  html+='<th style="background:#155a32">Gross</th><th style="background:#155a32">Hcp</th><th style="background:#155a32">Net</th></tr></thead><tbody>';
+  teams.forEach((t,ti)=>{
+    const hcp=getHcp(t.name,info.side);
+    const isBye=t.name===byeTeam;
+    const ghost=isBye?getGhost(t.name,info.side):null;
+    const isGhost=isBye&&ghost&&ghost.round;
+    html+='<tr>';
+    html+=`<td class="team-cell">${t.name}<div class="sub">${t.p1} / ${t.p2}</div></td>`;
+    idxs.forEach((idx,pos)=>{
+      const h=hNum(idx),p3=P3.has(h);
+      let val='';
+      if(saved){val=saved.scores[ti]?(saved.scores[ti][pos]||''):''}
+      else if(isGhost){val=ghost.round.holes[pos]?.score||'';}
+      const ro=(saved||isGhost)?'readonly':'';
+      const gc=isGhost?' ghost-inp':'';
+      html+=`<td${p3?' class="p3inp"':''}><input class="hi${gc}" type="number" id="sc-${ti}-${pos}" value="${val}" min="1" max="15" ${ro} oninput="updRow(${ti},${info.side==='front'?0:1})"></td>`;
+    });
+    html+=`<td class="tot" id="tot-${ti}">&#8212;</td>`;
+    html+=`<td class="hcpd" id="hcp-${ti}">${hcp}</td>`;
+    html+=`<td class="netd" id="net-${ti}">&#8212;</td>`;
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById('score-grid').innerHTML=html;
+  teams.forEach((_,ti)=>updRow(ti,info.side==='front'?0:1));
+  if(saved){
+    document.getElementById('entry-status').textContent='Week '+info.week+' already saved. See results below.';
+    showWeekResults(saved);
+  } else {
+    document.getElementById('entry-status').textContent='';
+    document.getElementById('week-results').innerHTML='';
+  }
+}
+
+function updRow(ti,sideIdx){
+  const idxs=sideIdx===0?FRONT:BACK;
+  let gross=0,valid=true;
+  idxs.forEach((_,pos)=>{
+    const el=document.getElementById('sc-'+ti+'-'+pos);
+    const v=el?parseInt(el.value):0;
+    if(!v||v<1)valid=false;
+    gross+=v||0;
+  });
+  const team=S.teams[ti];if(!team)return;
+  const side=sideIdx===0?'front':'back';
+  const hcp=getHcp(team.name,side);
+  const net=valid?gross-hcp:'—';
+  document.getElementById('tot-'+ti).textContent=valid?gross:'—';
+  document.getElementById('hcp-'+ti).textContent=hcp;
+  document.getElementById('net-'+ti).textContent=net;
+}
+
+function clearScores(){
+  const wnum=parseInt(document.getElementById('wk-sel').value);
+  const info=getWeekInfo(wnum);
+  if(!info)return;
+  if(S.weeks.find(w=>w.week===wnum)){alert('Week '+wnum+' is already saved and cannot be cleared.');return;}
+  const idxs=sideIdxs(info.side);
+  const byePair=info.pairs.find(p=>p[0]==='BYE'||p[1]==='BYE');
+  const byeTeam=byePair?(byePair[0]==='BYE'?byePair[1]:byePair[0]):null;
+  S.teams.forEach((t,ti)=>{
+    if(t.name===byeTeam)return;
+    idxs.forEach((_,pos)=>{
+      const el=document.getElementById('sc-'+ti+'-'+pos);
+      if(el&&!el.readOnly)el.value='';
+    });
+    updRow(ti,info.side==='front'?0:1);
+  });
+  document.getElementById('week-results').innerHTML='';
+  document.getElementById('entry-status').textContent='';
+}
+
+function processWeek(){
+  const wnum=parseInt(document.getElementById('wk-sel').value);
+  const info=getWeekInfo(wnum);
+  if(!info){alert('Schedule not available. Add teams first.');return;}
+  if(S.weeks.find(w=>w.week===wnum)){alert('Week '+wnum+' is already saved.\nView it in the History tab.');return;}
+  const idxs=sideIdxs(info.side);
+  const side=info.side;
+  const par=sidePar(side);
+  const scores=[];
+  let anyMissing=false;
+  S.teams.forEach((t,ti)=>{
+    const holes=idxs.map((_,pos)=>{
+      const el=document.getElementById('sc-'+ti+'-'+pos);
+      return el?parseInt(el.value)||0:0;
+    });
+    if(holes.some(h=>h<1))anyMissing=true;
+    const gross=holes.reduce((a,b)=>a+b,0);
+    const hcp=getHcp(t.name,side);
+    scores.push({team:t.name,holes,gross,hcp,net:gross-hcp});
+  });
+  if(anyMissing&&!confirm('Some hole scores are missing or zero.\nContinue anyway?'))return;
+
+  scores.forEach(sc=>{
+    if(!S.rounds.find(r=>r.team===sc.team&&r.week===wnum&&r.side===side)){
+      S.rounds.push({
+        team:sc.team,side,week:wnum,gross:sc.gross,par,
+        holes:idxs.map((idx,pos)=>({hole:hNum(idx),par:TC.par[idx],score:sc.holes[pos]})),
+        date:new Date().toLocaleDateString()
+      });
+    }
+  });
+
+  const byePair=info.pairs.find(p=>p[0]==='BYE'||p[1]==='BYE');
+  const byeTeam=byePair?(byePair[0]==='BYE'?byePair[1]:byePair[0]):null;
+  const matches=[];
+
+  info.pairs.forEach(([a,b])=>{
+    const isBye=a==='BYE'||b==='BYE';
+    const teamA=isBye?(a==='BYE'?b:a):a;
+    const teamBraw=isBye?'BYE':b;
+    const scA=scores.find(s=>s.team===teamA);
+    if(!scA)return;
+    let scB,ghostName='';
+    if(isBye){
+      const ghost=getGhost(teamA,side);
+      if(ghost&&ghost.round){
+        ghostName=ghost.name;
+        const gHoles=idxs.map((_,pos)=>ghost.round.holes[pos]?.score||0);
+        const gGross=gHoles.reduce((a,b)=>a+b,0);
+        const gHcp=getHcp(ghost.name,side);
+        scB={team:'Ghost:'+ghost.name,holes:gHoles,gross:gGross,hcp:gHcp,net:gGross-gHcp};
+      } else {
+        ghostName=ghost?ghost.name:'?';
+        scB={team:'Ghost',holes:idxs.map(()=>0),gross:0,hcp:0,net:999};
+      }
+    } else {
+      scB=scores.find(s=>s.team===teamBraw);
+    }
+    if(!scB)return;
+    let ptA=0,ptB=0;
+    const holeDetails=idxs.map((idx,pos)=>{
+      const hole=hNum(idx),p3=P3.has(hole);
+      const stA=p3?0:(scA.hcp>0?1:0);
+      const stB=p3?0:(scB.hcp>0?1:0);
+      const nA=(scA.holes[pos]||0)-stA;
+      const nB=(scB.holes[pos]||0)-stB;
+      let hpA=0,hpB=0;
+      if(nA<nB)hpA=1;else if(nB<nA)hpB=1;else{hpA=0.5;hpB=0.5;}
+      ptA+=hpA;ptB+=hpB;
+      return{hole,par:TC.par[idx],p3,gA:scA.holes[pos],gB:scB.holes[pos],nA,nB,hpA,hpB};
+    });
+    let lA=0,lB=0;
+    if(scA.net<scB.net)lA=1;else if(scB.net<scA.net)lB=1;else{lA=0.5;lB=0.5;}
+    ptA+=lA;ptB+=lB;
+    matches.push({
+      teamA,teamB:isBye?'BYE:'+ghostName:teamBraw,
+      ptsA:ptA,ptsB:ptB,netA:scA.net,netB:scB.net,
+      grossA:scA.gross,grossB:scB.gross,hcpA:scA.hcp,hcpB:scB.hcp,
+      holeDetails,isBye,week:wnum,side
+    });
+  });
+
+  const skins=calcSkins(scores,idxs,side,18);
+  const weekData={
+    week:wnum,side,
+    scores:S.teams.map((_,ti)=>idxs.map((_,pos)=>{
+      const el=document.getElementById('sc-'+ti+'-'+pos);
+      return el?parseInt(el.value)||0:0;
+    })),
+    matches,skins
+  };
+  S.weeks.push(weekData);sv();
+  showWeekResults(weekData);
+  document.getElementById('entry-status').textContent='Week '+wnum+' saved!';
+  renderStandings();
+}
+
+function calcSkins(scores,idxs,side,pot){
+  let carryover=0;
+  const skinHoles=[];
+  const won={};
+  scores.forEach(s=>won[s.team]=0);
+  idxs.forEach((idx,pos)=>{
+    const hole=hNum(idx),p3=P3.has(hole);
+    const nets=scores.map(s=>{
+      const strokes=p3?0:(s.hcp>0?1:0);
+      return(s.holes[pos]||99)-strokes;
+    });
+    const min=Math.min(...nets);
+    const winners=scores.filter((_,i)=>nets[i]===min).map(s=>s.team);
+    if(winners.length===1){
+      const skinsWon=1+carryover;
+      skinHoles.push({hole,par:TC.par[idx],p3,min,winner:winners[0],skinsWon,carryover});
+      won[winners[0]]+=skinsWon;
+      carryover=0;
+    } else {
+      skinHoles.push({hole,par:TC.par[idx],p3,min,winner:null,tied:winners,carryover});
+      carryover++;
+    }
+  });
+  const totalSkins=Object.values(won).reduce((a,b)=>a+b,0);
+  const perSkin=totalSkins>0?Math.floor((pot/totalSkins)/0.5)*0.5:0;
+  const totalPaid=perSkin*totalSkins;
+  const rollover=+(pot-totalPaid).toFixed(2);
+  return{holes:skinHoles,won,totalSkins,perSkin,totalPaid,rollover,pot};
+}
+
+function showWeekResults(wd){
+  let html='';
+  html+='<div class="card"><div class="ct">Week '+wd.week+' scores &mdash; '+(wd.side==='front'?'Front 9 (holes 1&ndash;9)':'Back 9 (holes 10&ndash;18)')+'</div>';
+  html+='<div class="ox"><table><thead><tr><th>Team</th><th>Players</th><th>Gross</th><th>Hcp</th><th>Net</th></tr></thead><tbody>';
+  S.teams.forEach((t,ti)=>{
+    const hcp=getHcp(t.name,wd.side);
+    const holes=wd.scores[ti]||[];
+    const gross=holes.reduce((a,b)=>a+b,0);
+    const net=gross-hcp;
+    const par=sidePar(wd.side);
+    const diff=gross-par;
+    html+='<tr><td><b>'+t.name+'</b></td><td style="color:#6b6b66;font-size:11px">'+t.p1+' / '+t.p2+'</td>';
+    html+='<td>'+gross+' <span class="bx '+(diff<=0?'bg':diff<=3?'ba':'br')+'">'+(diff>=0?'+':'')+diff+'</span></td>';
+    html+='<td>'+hcp+'</td><td><b>'+net+'</b></td></tr>';
+  });
+  html+='</tbody></table></div></div>';
+
+  html+='<div class="card"><div class="ct">Week '+wd.week+' match results</div>';
+  (wd.matches||[]).forEach(m=>{
+    const tBDisplay=m.isBye?'Ghost ('+m.teamB.replace(/^BYE:/,'')+')<i style="font-size:10px;color:#6b6b66;font-style:italic"> &mdash; bye match</i>':m.teamB;
+    const winnerLabel=m.ptsA>m.ptsB?m.teamA:m.ptsB>m.ptsA&&!m.isBye?m.teamB:'';
+    html+='<div style="background:#f4f4f2;border-radius:8px;padding:10px 12px;margin-bottom:8px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:4px">';
+    html+='<div style="font-size:12px;font-weight:600">'+m.teamA+' <span style="color:#6b6b66;font-weight:400">vs</span> '+tBDisplay+'</div>';
+    html+=(winnerLabel?'<span class="bx bg">'+winnerLabel+' wins</span>':m.ptsA===m.ptsB?'<span class="bx bb">Tied</span>':'');
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
+    html+='<div class="met"><div class="v">'+m.ptsA+'</div><div class="l">'+m.teamA+' &middot; gross '+m.grossA+' &middot; hcp '+m.hcpA+' &middot; net '+m.netA+'</div></div>';
+    html+='<div class="met"><div class="v">'+m.ptsB+'</div><div class="l">'+m.teamB.replace(/^BYE:/,'')+' &middot; gross '+m.grossB+' &middot; hcp '+m.hcpB+' &middot; net '+m.netB+'</div></div>';
+    html+='</div>';
+    html+='<details><summary style="font-size:11px;color:#6b6b66;cursor:pointer">Hole-by-hole detail</summary>';
+    html+='<div class="ox" style="margin-top:6px"><table>';
+    html+='<thead><tr><th>Hole</th><th>Par</th><th>'+m.teamA+' gross</th><th>'+m.teamA+' net</th><th>'+m.teamB.replace(/^BYE:/,'')+' gross</th><th>'+m.teamB.replace(/^BYE:/,'')+' net</th><th>'+m.teamA+'</th><th>'+m.teamB.replace(/^BYE:/,'')+'</th></tr></thead><tbody>';
+    m.holeDetails.forEach(h=>{
+      html+='<tr><td>'+h.hole+(h.p3?' <span class="bx bi" style="font-size:9px">p3</span>':'')+'</td>';
+      html+='<td>'+h.par+'</td><td>'+(h.gA||'&mdash;')+'</td><td>'+h.nA+'</td><td>'+(h.gB||'&mdash;')+'</td><td>'+h.nB+'</td>';
+      html+='<td><b>'+h.hpA+'</b></td><td><b>'+h.hpB+'</b></td></tr>';
+    });
+    const holePtsA=m.holeDetails.reduce((a,h)=>a+h.hpA,0);
+    const holePtsB=m.holeDetails.reduce((a,h)=>a+h.hpB,0);
+    html+='<tr style="background:#f0f7f3"><td colspan="5" style="color:#6b6b66;font-size:11px">Low net pt &mdash; '+m.teamA+': '+m.netA+' vs '+m.teamB.replace(/^BYE:/,'')+': '+m.netB+'</td>';
+    html+='<td></td><td><b>'+(m.ptsA-holePtsA).toFixed(1)+'</b></td><td><b>'+(m.ptsB-holePtsB).toFixed(1)+'</b></td></tr>';
+    html+='</tbody></table></div></details></div>';
+  });
+  html+='</div>';
+
+  const sk=wd.skins;
+  html+='<div class="card"><div class="ct">Week '+wd.week+' skins &mdash; $'+sk.pot+' pot &middot; whole field</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">';
+  html+='<div class="met"><div class="v">$'+sk.pot+'</div><div class="l">Pot</div></div>';
+  html+='<div class="met"><div class="v">'+sk.totalSkins+'</div><div class="l">Skins won</div></div>';
+  html+='<div class="met"><div class="v">$'+sk.perSkin.toFixed(2)+'</div><div class="l">Per skin</div></div>';
+  html+='<div class="met"><div class="v" style="'+(sk.rollover>0?'color:#b83232':'')+'">$'+sk.rollover.toFixed(2)+'</div><div class="l">Rollover</div></div>';
+  html+='</div>';
+  html+='<div class="ox"><table><thead><tr><th>Hole</th><th>Par</th><th>Low net</th><th>Winner</th><th>Skins</th><th>Value</th></tr></thead><tbody>';
+  sk.holes.forEach(h=>{
+    html+='<tr><td>'+h.hole+(h.p3?' <span class="bx bi" style="font-size:9px">p3</span>':'')+'</td>';
+    html+='<td>'+h.par+'</td><td>'+h.min+'</td>';
+    html+='<td>'+(h.winner?'<b>'+h.winner+'</b>':'<span class="bx ba">Tied &mdash; '+h.tied.join(', ')+'</span>')+'</td>';
+    html+='<td>'+(h.winner?h.skinsWon:(h.carryover?'carries':'&mdash;'))+'</td>';
+    html+='<td>'+(h.winner?'<b>$'+(h.skinsWon*sk.perSkin).toFixed(2)+'</b>':'&mdash;')+'</td></tr>';
+  });
+  html+='</tbody></table></div>';
+  if(sk.totalSkins>0){
+    const payers=Object.entries(sk.won).filter(([,v])=>v>0);
+    html+='<div class="sep"></div><div style="font-weight:600;font-size:12px;margin-bottom:8px">Payouts</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    payers.forEach(([nm,n])=>{
+      html+='<div class="met" style="min-width:130px"><div class="v">$'+(n*sk.perSkin).toFixed(2)+'</div><div class="l">'+nm+' &middot; '+n+' skin'+(n>1?'s':'')+'</div></div>';
+    });
+    html+='</div>';
+  } else {
+    html+='<div class="info warn" style="margin-top:8px">No skins won &mdash; full $'+sk.pot+' rolls to next week.</div>';
+  }
+  html+='</div>';
+  document.getElementById('week-results').innerHTML=html;
+}
+
+function addTeam(){
+  const nm=document.getElementById('tn').value.trim();
+  const p1=document.getElementById('tp1').value.trim();
+  const p2=document.getElementById('tp2').value.trim();
+  if(!nm||!p1||!p2){alert('Please fill in team name and both player names.');return;}
+  if(S.teams.find(t=>t.name===nm)){alert('A team with that name already exists.');return;}
+  if(S.teams.length>=9){alert('Maximum 9 teams allowed.');return;}
+  S.teams.push({name:nm,p1,p2});sv();
+  ['tn','tp1','tp2'].forEach(id=>document.getElementById(id).value='');
+  renderTeams();
+  alert('Team "'+nm+'" added!');
+}
+function removeTeam(nm){
+  if(!confirm('Remove team "'+nm+'"?\nThis will also delete all their recorded rounds.'))return;
+  S.teams=S.teams.filter(t=>t.name!==nm);
+  S.rounds=S.rounds.filter(r=>r.team!==nm);
+  sv();renderTeams();
+}
+function renderTeams(){
+  const el=document.getElementById('teams-out');
+  if(!S.teams.length){el.innerHTML='<div class="info">No teams yet. Add up to 9 teams above.</div>';return;}
+  let html='<div class="card"><div class="ct">'+S.teams.length+' / 9 teams registered</div><div class="ox"><table>';
+  html+='<thead><tr><th>#</th><th>Team name</th><th>Players</th><th>Front hcp</th><th>Back hcp</th><th>Status</th><th></th></tr></thead><tbody>';
+  S.teams.forEach((t,i)=>{
+    const fr=getRounds(t.name,'front').length,br=getRounds(t.name,'back').length;
+    const fh=calcHcp(getRounds(t.name,'front')),bh=calcHcp(getRounds(t.name,'back'));
+    const est=isEstablished(t.name);
+    html+='<tr><td>'+(i+1)+'</td><td><b>'+t.name+'</b></td><td style="color:#6b6b66">'+t.p1+' / '+t.p2+'</td>';
+    html+='<td>'+(fh!==null?'<span class="bx bg">'+fh+'</span>':'<span class="bx ba">'+fr+'/2 rds</span>')+'</td>';
+    html+='<td>'+(bh!==null?'<span class="bx bg">'+bh+'</span>':'<span class="bx ba">'+br+'/2 rds</span>')+'</td>';
+    html+='<td><span class="bx '+(est?'bg':'ba')+'">'+(est?'Established':'Establishing')+'</span></td>';
+    html+='<td><button class="btn btn-sm btn-d" onclick="removeTeam(\''+t.name.replace(/'/g,"\\'")+'\')" >Remove</button></td></tr>';
+  });
+  html+='</tbody></table></div></div>';
+  el.innerHTML=html;
+}
+
+function renderStandings(){
+  const pts={},ms={},wins={};
+  S.teams.forEach(t=>{pts[t.name]=0;ms[t.name]=0;wins[t.name]=0;});
+  S.weeks.forEach(w=>{
+    (w.matches||[]).forEach(m=>{
+      pts[m.teamA]=(pts[m.teamA]||0)+m.ptsA;ms[m.teamA]=(ms[m.teamA]||0)+1;
+      if(m.ptsA>m.ptsB)wins[m.teamA]=(wins[m.teamA]||0)+1;
+      if(!m.teamB.startsWith('BYE')){
+        pts[m.teamB]=(pts[m.teamB]||0)+m.ptsB;ms[m.teamB]=(ms[m.teamB]||0)+1;
+        if(m.ptsB>m.ptsA)wins[m.teamB]=(wins[m.teamB]||0)+1;
+      }
+    });
+  });
+  const sorted=Object.entries(pts).sort((a,b)=>b[1]-a[1]);
+  const el=document.getElementById('stand-out');
+  if(!sorted.length){el.innerHTML='<div class="info">No matches saved yet.</div>';return;}
+  const medals=['&#127945;','&#127946;','&#127947;'];
+  let html='<div class="ox"><table><thead><tr><th>#</th><th>Team</th><th>Players</th><th>Matches</th><th>Wins</th><th>Total pts</th><th>Avg / match</th></tr></thead><tbody>';
+  sorted.forEach(([nm,p],i)=>{
+    const t=S.teams.find(x=>x.name===nm)||{p1:'',p2:''};
+    const m=ms[nm]||0,w=wins[nm]||0;
+    html+='<tr'+(i===0?' style="background:#e8f5ee"':'')+'>';
+    html+='<td style="font-size:15px">'+(medals[i]||(i+1))+'</td>';
+    html+='<td><b>'+nm+'</b></td><td style="color:#6b6b66;font-size:11px">'+t.p1+' / '+t.p2+'</td>';
+    html+='<td>'+m+'</td><td>'+w+'</td>';
+    html+='<td><b style="color:#1a6b3c;font-size:14px">'+p+'</b></td>';
+    html+='<td>'+(m?(p/m).toFixed(1):'&mdash;')+'</td></tr>';
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('stand-out').innerHTML=html;
+
+  const hel=document.getElementById('hcp-out');
+  if(!S.teams.length){hel.innerHTML='<div class="info">No teams yet.</div>';return;}
+  let hhtml='<div class="ox"><table><thead><tr><th>Team</th><th>Front rounds</th><th>Front hcp</th><th>Back rounds</th><th>Back hcp</th><th>Status</th></tr></thead><tbody>';
+  S.teams.forEach(t=>{
+    const fr=getRounds(t.name,'front').length,br=getRounds(t.name,'back').length;
+    const fh=calcHcp(getRounds(t.name,'front')),bh=calcHcp(getRounds(t.name,'back'));
+    const est=isEstablished(t.name);
+    hhtml+='<tr><td><b>'+t.name+'</b></td><td>'+fr+'</td><td>'+(fh!==null?fh:'&mdash;')+'</td>';
+    hhtml+='<td>'+br+'</td><td>'+(bh!==null?bh:'&mdash;')+'</td>';
+    hhtml+='<td><span class="bx '+(est?'bg':'ba')+'">'+(est?'Established':'Establishing')+'</span></td></tr>';
+  });
+  hhtml+='</tbody></table></div>';
+  hel.innerHTML=hhtml;
+}
+
+function initHistory(){
+  const sel=document.getElementById('hist-sel');
+  const hout=document.getElementById('hist-out');
+  if(!S.weeks.length){hout.innerHTML='<div class="info">No weeks saved yet.</div>';return;}
+  const cur=sel.value;
+  sel.innerHTML=[...S.weeks].reverse().map(w=>
+    `<option value="${w.week}"${cur==w.week?' selected':''}>Week ${w.week} &mdash; ${w.side==='front'?'Front 9':'Back 9'}</option>`
+  ).join('');
+  showHistory();
+}
+function showHistory(){
+  const wnum=parseInt(document.getElementById('hist-sel').value);
+  const wd=S.weeks.find(w=>w.week===wnum);
+  if(!wd){document.getElementById('hist-out').innerHTML='<div class="info">Week not found.</div>';return;}
+  showWeekResults(wd);
+  document.getElementById('hist-out').innerHTML=document.getElementById('week-results').innerHTML;
+  document.getElementById('week-results').innerHTML='';
+}
+
+function renderSchedule(){
+  const el=document.getElementById('sched-out');
+  const sched=genSchedule();
+  if(!sched.length){el.innerHTML='<div class="info">Add at least 2 teams to generate the schedule.</div>';return;}
+  let html='';
+  sched.forEach(w=>{
+    const saved=S.weeks.find(x=>x.week===w.week);
+    html+='<div style="padding:8px 0;border-bottom:1px solid #f0f0ec;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">';
+    html+='<div style="min-width:100px;flex-shrink:0">';
+    html+='<div style="font-weight:600;font-size:12px">Week '+w.week+'</div>';
+    html+='<div style="margin-top:3px"><span class="bx '+(w.side==='front'?'bi':'bb')+'">'+(w.side==='front'?'Front 9':'Back 9')+'</span>';
+    if(saved)html+=' <span class="bx bg">&#10003; Saved</span>';
+    html+='</div></div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:10px;flex:1;font-size:12px;padding-top:2px">';
+    w.pairs.forEach(([a,b])=>{
+      const bye=a==='BYE'||b==='BYE';
+      const real=bye?(a==='BYE'?b:a):null;
+      html+=bye
+        ?'<span>'+real+' <span class="bx ba">bye &mdash; ghost match</span></span>'
+        :'<span>'+a+' <span style="color:#6b6b66">vs</span> '+b+'</span>';
+    });
+    html+='</div></div>';
+  });
+  el.innerHTML=html;
+}
+
+initWeekly();
+renderTeams();
+</script>
+</body>
+</html>
